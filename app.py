@@ -1,4 +1,4 @@
-import cx_Oracle
+import oracledb
 import streamlit as st
 import pandas as pd
 from datetime import datetime
@@ -6,13 +6,13 @@ from datetime import datetime
 # Database connection function
 def get_db_connection():
     try:
-        conn = cx_Oracle.connect(
+        conn = oracledb.connect(
             user="perfect",
             password="perfect",
             dsn="(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.0.224)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=ho)))"
         )
         return conn
-    except cx_Oracle.DatabaseError as e:
+    except oracledb.DatabaseError as e:
         st.error(f"Database connection failed: {e}")
         return None
 
@@ -103,7 +103,7 @@ def apply_leave(emp_code, sdate, edate, ltype, reason):
         """, (emp_code, sdate_str, edate_str, ltype, days, updated_balance, reason))
         conn.commit()
         st.success(f"Leave applied for {days} day(s). New {ltype} balance: {updated_balance}")
-    except cx_Oracle.DatabaseError as e:
+    except oracledb.DatabaseError as e:
         st.error(f"Error applying leave: {e}")
     finally:
         conn.close()
